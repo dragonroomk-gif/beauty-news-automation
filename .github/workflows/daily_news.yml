@@ -1,33 +1,31 @@
-name: Daily Beauty News
+name: Daily BeautyNuri Summary
 
 on:
   schedule:
+    # 한국 시간(KST) 아침 8시는 UTC 기준으로 전날 밤 11시(23시)입니다.
     - cron: '0 23 * * *'
-  workflow_dispatch:
+  workflow_dispatch: # 수동으로도 실행할 수 있게 해주는 옵션
 
 jobs:
-  run:
+  build:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - uses: actions/checkout@v3
-      
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      
-      - name: Install libraries
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      
-      - name: Run script
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python main.py
-      
-      - name: Save result
-        uses: actions/upload-artifact@v4
-        with:
-          name: news-summary
-          path: beauty_news_summary.txt
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests beautifulsoup4 google-generativeai
+
+    - name: Run script
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        KAKAO_TOKEN: ${{ secrets.KAKAO_TOKEN }}
+      run: python main.py
