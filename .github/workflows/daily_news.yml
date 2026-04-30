@@ -27,7 +27,7 @@ jobs:
         run: python main.py
       
       - name: Save result
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: news-summary
           path: beauty_news_summary.txt
